@@ -4,9 +4,10 @@ Compares user report data against current market averages.
 """
 import json
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.config import settings
+from app.core.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -98,7 +99,7 @@ def _strip_code_fences(text: str) -> str:
 
 
 @router.get("/{report_type}")
-async def get_benchmarks(report_type: str):
+async def get_benchmarks(report_type: str, user: str = Depends(get_current_user)):
     """
     Fetch real-time Amazon seller industry benchmarks via Perplexity Sonar.
     Returns structured metrics for chart comparison.
